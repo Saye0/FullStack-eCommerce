@@ -30,7 +30,7 @@ router.delete("/delete-product/:id", async (req, res) => {
 });
 
 router.get("/get-products", async (req, res) => {
-  try {
+  /* try {
     const urunler = await Product.find();
     res.status(200).json(urunler);
   } catch (hata) {
@@ -38,7 +38,8 @@ router.get("/get-products", async (req, res) => {
       mesaj: "Ürünleri getirirken bir hata oluştu",
       hata: hata.message,
     });
-  }
+  } */
+  res.send("sdfsdfs");
 });
 
 router.get("/get-product/:id", async (req, res) => {
