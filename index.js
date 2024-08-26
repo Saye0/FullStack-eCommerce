@@ -18,6 +18,10 @@ const connect = async () => {
   }
 };
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 // ProductRouter'ı kullanırken, /api/products prefix'ini kaldırın
 app.use("/api", ProductRouter);
 
