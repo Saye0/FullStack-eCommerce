@@ -19,7 +19,7 @@ const connect = async () => {
 };
 
 // ProductRouter'ı kullanırken, /api/products prefix'ini kaldırın
-app.use("/", ProductRouter);
+app.use("/api", ProductRouter);
 
 app.listen(8000, () => {
   console.log("8000 port listening on");
