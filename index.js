@@ -17,7 +17,7 @@ app.options("", cors(corsConfig));
 const connect = async () => {
   try {
     await mongoose.connect(
-      "mongodb+srv://root:root@cluster0.9nvfu.mongodb.net/"
+      "mongodb+srv://root:root2@cluster1.b7m1o.mongodb.net/"
     );
     console.log("connected to MongoDB");
   } catch (error) {

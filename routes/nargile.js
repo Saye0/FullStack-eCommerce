@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Product = require("../models/nargile");
 
-router.post("/adminpage", (req, res) => {
+router.post("/adminpage", async (req, res) => {
   const { username, password } = req.body;
   if (username === "admin" && password === "password") {
     res.status(200).json({ message: "Giriş başarılı" });
