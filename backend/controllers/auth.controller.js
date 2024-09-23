@@ -3,29 +3,29 @@ import User from "../models/user.model.js"
 import jwt from "jsonwebtoken"
 
 //Generate Tokens
-const generateTokens = (userİd) => {
+const generateTokens = (userId) => {
 
-    const accesToken = jwt.sign(
-        { userİd },
+    const accessToken = jwt.sign(
+        { userId },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "15m" }
     )
     const refreshToken = jwt.sign(
-        { userİd },
+        { userId },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: "7d" }
     )
-    return { accesToken, refreshToken };
+    return { accessToken, refreshToken };
 }
 
 //Save tokens to redis
-const storeRefreshToken = async (userİd, refreshToken) => {
-    await redis.set(`refresh_token:${userİd}`, refreshToken, "EX", 7 * 24 * 60 * 60)
+const storeRefreshToken = async (userId, refreshToken) => {
+    await redis.set(`refresh_token:${userId}`, refreshToken, "EX", 7 * 24 * 60 * 60)
 }
 
 //Set cookies
-const setCookies = (res, accesToken, refreshToken) => {
-    res.cookie("accesToken", accesToken, {
+const setCookies = (res, accessToken, refreshToken) => {
+    res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: 'strict',
@@ -35,7 +35,7 @@ const setCookies = (res, accesToken, refreshToken) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: 'strict',
-        maxage: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000
     })
 }
 
@@ -49,14 +49,14 @@ export const signup = async (req, res) => {
         }
         const user = await User.create({ email, password, name })
 
-        const { accesToken, refreshToken } = generateTokens(user._id)
+        const { accessToken, refreshToken } = generateTokens(user._id)
 
         storeRefreshToken(user._id, refreshToken)
 
-        setCookies(res, accesToken, refreshToken)
+        setCookies(res, accessToken, refreshToken)
 
         res.status(201).json({
-            _id: user._id,
+            _Id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
@@ -72,13 +72,13 @@ export const logout = async (req, res) => {
         const refreshToken = req.cookies.refreshToken
         if (refreshToken) {
             const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-            await redis.del(`refresh_token:${decoded.userİd}`)
+            await redis.del(`refresh_token:${decoded.userId}`)
 
         } else {
             return res.status(500).json({ message: "You already logged out" })
         }
 
-        res.clearCookie("accesToken")
+        res.clearCookie("accessToken")
         res.clearCookie("refreshToken")
         res.json({ message: "Logged out successfully" })
 
@@ -98,9 +98,9 @@ export const login = async (req, res) => {
 
         if (user && isPasswordValid) {
 
-            const { accesToken, refreshToken } = generateTokens(user._id)
+            const { accessToken, refreshToken } = generateTokens(user._id)
             storeRefreshToken(user._id, refreshToken)
-            setCookies(res, accesToken, refreshToken)
+            setCookies(res, accessToken, refreshToken)
             res.status(200).json({ message: "Login successful", user: { _id: user._id, email: user.email } })
 
         } else {
@@ -113,7 +113,6 @@ export const login = async (req, res) => {
 }
 
 // Refresh Token
-
 export const refreshToken = async (req, res) => {
     try {
         const oldRefreshToken = req.cookies.refreshToken
@@ -121,14 +120,14 @@ export const refreshToken = async (req, res) => {
             return res.status(500).json({ message: "No refresh token provided " })
         }
         const decoded = jwt.verify(oldRefreshToken, process.env.REFRESH_TOKEN_SECRET)
-        const storedToken = await redis.get(`refresh_token:${decoded.userİd}`)
+        const storedToken = await redis.get(`refresh_token:${decoded.userId}`)
         if (storedToken !== oldRefreshToken) {
             return res.status(500).json({ message: "Invalid refresh token" })
         }
-        const accesToken = jwt.sign({ userid: decoded.userid }, process.env.ACCESS_TOKEN_SECRET, {
+        const accessToken = jwt.sign({ userid: decoded.userid }, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: "15m"
         })
-        res.cookie("accesToken", accesToken, {
+        res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
@@ -140,3 +139,11 @@ export const refreshToken = async (req, res) => {
     }
 }
 
+// Get Profile
+// export const getProfile = async (req, res) => {
+//     try {
+//         const
+//     } catch (error) {
+
+//     }
+// }
