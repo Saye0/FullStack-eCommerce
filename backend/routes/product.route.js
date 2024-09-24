@@ -15,7 +15,9 @@ router.get("/", protectRoute, adminRoute, getAllProduct)
 router.get("/featured", getFeaturedProducts)
 router.get("/recommendations", getRecommendationsProducts)
 router.get("/category/:category", getProductsByCategory)
+
 router.patch("/:id", protectRoute, adminRoute, toggleFeaturedProduct)
+
 router.post("/", protectRoute, adminRoute, createProduct)
 router.post("/:id", protectRoute, adminRoute, deleteProduct)
 
