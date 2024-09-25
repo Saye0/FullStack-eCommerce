@@ -18,7 +18,7 @@ export const getFeaturedProducts = async (req, res) => {
     try {
         let featuredProducts = await redis.get("featured_products")
         if (featuredProducts) {
-            //console.log("from Redis")
+            console.log("from Redis")
 
             return res.json(JSON.parse(featuredProducts))
         }
@@ -30,7 +30,7 @@ export const getFeaturedProducts = async (req, res) => {
         }
 
         await redis.set("featured_products", JSON.stringify(featuredProducts))
-        //console.log("from mongoDB")
+        console.log("from mongoDB")
         res.json(featuredProducts)
 
     } catch (error) {

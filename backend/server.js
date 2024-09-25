@@ -16,7 +16,8 @@ app.use(cookieParser())
 app.use("/api/auth", authRoute)
 app.use("/api/product", productRoute)
 app.use("/api/cart", cartRoute)
-
+app.use("/api/coupons", couponRoutes);
+app.use("/api/payments", paymentRoutes);
 
 
 
