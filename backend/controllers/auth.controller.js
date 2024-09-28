@@ -38,14 +38,13 @@ const setCookies = (res, accessToken, refreshToken) => {
 }
 // User signup
 export const signup = async (req, res) => {
-    const { email, password, name } = req.body
+    const { name, email, password } = req.body
     try {
         const userExists = await User.findOne({ email })
         if (userExists) {
             return res.status(400).json({ message: "User already exists" })
         }
         const user = await User.create({ email, password, name })
-
         const { accessToken, refreshToken } = generateTokens(user._id)
 
         storeRefreshToken(user._id, refreshToken)
@@ -84,26 +83,29 @@ export const logout = async (req, res) => {
 }
 // User login
 export const login = async (req, res) => {
-    const { email, password } = req.body
     try {
-        const user = await User.findOne({ email })
-        const isPasswordValid = await user.comparePassword(password);
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
 
-        if (user && isPasswordValid) {
+        if (user && (await user.comparePassword(password))) {
+            const { accessToken, refreshToken } = generateTokens(user._id);
+            await storeRefreshToken(user._id, refreshToken);
+            setCookies(res, accessToken, refreshToken);
 
-            const { accessToken, refreshToken } = generateTokens(user._id)
-            storeRefreshToken(user._id, refreshToken)
-            setCookies(res, accessToken, refreshToken)
-            res.status(200).json({ message: "Login successful", user: { _id: user._id, email: user.email } })
-
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            });
         } else {
-            return res.status(400).json({ message: "Invalid email or password" })
+            res.status(400).json({ message: "Invalid email or password" });
         }
-
     } catch (error) {
-        res.status(500).json({ message: error })
+        console.log("Error in login controller", error.message);
+        res.status(500).json({ message: error.message });
     }
-}
+};
 // Refresh Token
 export const refreshToken = async (req, res) => {
     try {
@@ -132,10 +134,10 @@ export const refreshToken = async (req, res) => {
 }
 
 // Get Profile
-// export const getProfile = async (req, res) => {
-//     try {
-//         const
-//     } catch (error) {
-
-//     }
-// }
+export const getProfile = async (req, res) => {
+    try {
+        res.json(req.user);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
