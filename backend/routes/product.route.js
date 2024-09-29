@@ -8,7 +8,7 @@ import {
     toggleFeaturedProduct,
     getProductsByCategory
 } from "../controllers/product.controller.js ";
-import { adminRoute, protectRoute } from "../middleware/backend/middleware/auth.middleware.js";
+import { adminRoute, protectRoute } from "../middleware/auth.middleware.js";
 const router = express.Router();
 
 router.get("/", protectRoute, adminRoute, getAllProduct)
