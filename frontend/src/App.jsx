@@ -6,15 +6,28 @@ import Navbar from "./components/Navbar"
 import { Toaster } from "react-hot-toast"
 import { useUserStore } from "./stores/useUserStore"
 import { useEffect } from "react"
-import LoadingSpinner from "./components/loadingSpinner"
 import AdminPage from "./pages/AdminPage"
+import CategoryPage from "./pages/CategoryPage"
+import CartPage from "./pages/CartPage"
+import { useCartStore } from "./stores/useCartStore"
+import PurchaseCancelPage from "./pages/PurchaseCancelPage"
+import LoadingSpinner from "./components/LoadingSpinner"
+import PurchaseSuccessPage from "./pages/PurchaseSuccessPage"
 function App() {
-  const { user, checkAuth, checkingAuth } = useUserStore()
+  const { user, checkAuth, checkingAuth } = useUserStore();
+  const { getCartItems } = useCartStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  if (checkingAuth) return <LoadingSpinner />
+  useEffect(() => {
+    if (!user) return;
+
+    getCartItems();
+  }, [getCartItems, user]);
+
+  if (checkingAuth) return <LoadingSpinner />;
+
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
       {/* Background */}
@@ -28,11 +41,21 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/purchase-cancel" element={<PurchaseCancelPage />} />
           <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUpPage />} />
+          <Route path="/cart" element={!user ? <Navigate to="/" /> : <CartPage />} />
           <Route
             path='/secret-dashboard'
             element={user?.role === "admin" ? <AdminPage /> : <Navigate to='/login' />}
+          />
+          <Route
+            path='/category/:category'
+            element={<CategoryPage />}
+          />
+          <Route
+            path='/purchase-success'
+            element={user ? <PurchaseSuccessPage /> : <Navigate to='/login' />}
           />
         </Routes>
       </div>

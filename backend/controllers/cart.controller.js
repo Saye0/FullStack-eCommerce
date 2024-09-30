@@ -9,7 +9,7 @@ export const getCartProducts = async (req, res) => {
             const item = req.user.cartItems.find(cartItems => cartItems.id === product.id)
             return { ...product.toJSON(), quantity: item.quantity }
         })
-        res.json(cartItems)
+        res.json({ cartItems })
     } catch (error) {
         console.log(error)
     }
