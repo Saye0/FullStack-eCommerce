@@ -41,25 +41,25 @@ const AnalyticsTab = () => {
                     title='Total Users'
                     value={analyticsData.users.toLocaleString()}
                     icon={Users}
-                    color='from-emerald-500 to-teal-700'
+                    color='from-orange-500 to-amber-700'
                 />
                 <AnalyticsCard
                     title='Total Products'
                     value={analyticsData.products.toLocaleString()}
                     icon={Package}
-                    color='from-emerald-500 to-green-700'
+                    color='from-orange-500 to-red-700'
                 />
                 <AnalyticsCard
                     title='Total Sales'
                     value={analyticsData.totalSales.toLocaleString()}
                     icon={ShoppingCart}
-                    color='from-emerald-500 to-cyan-700'
+                    color='from-orange-500 to-yellow-700'
                 />
                 <AnalyticsCard
                     title='Total Revenue'
                     value={`$${analyticsData.totalRevenue.toLocaleString()}`}
                     icon={DollarSign}
-                    color='from-emerald-500 to-lime-700'
+                    color='from-orange-500 to-amber-700'
                 />
             </div>
             <motion.div
@@ -71,26 +71,28 @@ const AnalyticsTab = () => {
                 <ResponsiveContainer width='100%' height={400}>
                     <LineChart data={dailySalesData}>
                         <CartesianGrid strokeDasharray='3 3' />
-                        <XAxis dataKey='name' stroke='#D1D5DB' />
-                        <YAxis yAxisId='left' stroke='#D1D5DB' />
-                        <YAxis yAxisId='right' orientation='right' stroke='#D1D5DB' />
-                        <Tooltip />
-                        <Legend />
+                        <XAxis dataKey='name' stroke='#D1D5DB' tick={{ fontSize: 14 }} />
+                        <YAxis yAxisId='left' stroke='#D1D5DB' tick={{ fontSize: 14 }} />
+                        <YAxis yAxisId='right' orientation='right' stroke='#D1D5DB' tick={{ fontSize: 14 }} />
+                        <Tooltip contentStyle={{ fontSize: 14 }} />
+                        <Legend wrapperStyle={{ fontSize: 14 }} />
                         <Line
                             yAxisId='left'
                             type='monotone'
                             dataKey='sales'
-                            stroke='#10B981'
+                            stroke='#F97316'
                             activeDot={{ r: 8 }}
                             name='Sales'
+                            strokeWidth={2}
                         />
                         <Line
                             yAxisId='right'
                             type='monotone'
                             dataKey='revenue'
-                            stroke='#3B82F6'
+                            stroke='#FB923C'
                             activeDot={{ r: 8 }}
                             name='Revenue'
+                            strokeWidth={2}
                         />
                     </LineChart>
                 </ResponsiveContainer>
@@ -109,13 +111,13 @@ const AnalyticsCard = ({ title, value, icon: Icon, color }) => (
     >
         <div className='flex justify-between items-center'>
             <div className='z-10'>
-                <p className='text-emerald-300 text-sm mb-1 font-semibold'>{title}</p>
-                <h3 className='text-white text-3xl font-bold'>{value}</h3>
+                <p className='text-orange-300 text-base mb-1 font-semibold'>{title}</p>
+                <h3 className='text-white text-4xl font-bold'>{value}</h3>
             </div>
         </div>
-        <div className='absolute inset-0 bg-gradient-to-br from-emerald-600 to-emerald-900 opacity-30' />
-        <div className='absolute -bottom-4 -right-4 text-emerald-800 opacity-50'>
-            <Icon className='h-32 w-32' />
+        <div className='absolute inset-0 bg-gradient-to-br from-orange-600 to-orange-900 opacity-30' />
+        <div className='absolute -bottom-4 -right-4 text-orange-800 opacity-50'>
+            <Icon className='h-36 w-36' />
         </div>
     </motion.div>
 );

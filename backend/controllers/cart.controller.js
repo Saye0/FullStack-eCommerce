@@ -33,7 +33,7 @@ export const addToCart = async (req, res) => {
     }
 }
 
-// Remove from cart
+// Remove All from cart
 export const removeAllFromCart = async (req, res) => {
     try {
         const { productId } = req.body
